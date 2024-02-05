@@ -1,0 +1,77 @@
+---
+title: "Seoul Bike Sharing"
+author: "Isaac y Carmen"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    theme: flatly
+    toc: yes
+    toc_float:
+      collapsed: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introducción
+
+El conjunto de datos contiene el recuento de bicicletas públicas alquiladas por hora en el Sistema de Bicicletas Compartidas de Seúl, con los correspondientes datos meteorológicos e información sobre vacaciones.
+
+Los datos han sido extraídos del [repositorio UCI Machine Learning](https://archive.ics.uci.edu/dataset/560/seoul+bike+sharing+demand).
+
+
+
+# Datos
+
+A continuación leemos los datos y ver el tipo de variables.
+
+
+```{r lectura, warning=FALSE}
+# lectura de datos en csv
+SeoulBikeData <- read.csv("datos/SeoulBikeData.csv")
+ntotal <- dim(SeoulBikeData)[1] # numero de observaciones
+ptotal <- dim(SeoulBikeData)[2] # numero de columnas
+
+```
+
+Comprobamos que tenemos $n=$```r ntotal``` observaciones y $p=$```r ptotal``` variables en la base de datos.
+
+
+Realizamos la división de nuestros datos en 3 muestras: entrenamiento, validación y test.
+
+```{r particion}
+# mediante una semilla conseguimos que el ejercicio sea reproducible
+set.seed(1)
+
+# creamos índices
+indices <- 1:ntotal
+ntrain <- ntotal * .5
+ntest <- ntotal * .25
+nval <- ntotal - (ntrain+ntest)
+indices.train <- sample(indices, ntrain, replace = FALSE)
+indices.test <- sample(indices[-indices.train],ntest,replace=FALSE)
+indices.val <- indices[-c(indices.train,indices.test)]
+
+# Usamos el 50% de la base de datos como conjunto de entrenamiento
+# 25% para test
+# 25% para validación
+train  <- SeoulBikeData[indices.train, ]
+test   <- SeoulBikeData[indices.test, ]
+val   <- SeoulBikeData[indices.val, ]
+
+```
+
+Vamos a echarle un ojo a las variables:
+
+```{r}
+str(train)
+```
+
+# Análisis exploratorio de datos
+
+Planteamos algunas preguntas sobre nuestros datos:
+
+* ¿El clima influye en el alquiler de bicicletas?
+* ¿Influye más la nieve o la lluvia?
+* ¿Nieva mucho en Seúl?
