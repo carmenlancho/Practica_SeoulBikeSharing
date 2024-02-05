@@ -41,9 +41,15 @@ Según la descripción oficial de los datos, las variables que conforman el conj
 
 Nótese que el problema original es de regresión, es decir, la variable que se quiere predecir (número de bicicletas que se alquilan a la hora) es continua. Como para esta práctica estamos interesados en problemas de clasificación, tendremos que convertir dicho target continuo en un target binario. Así, la variable a predecir pasará de "número de biciletas que se alquilan por hora" a "la cantidad de bicicletas que se alquilan a la hora supera un determinado umbral". Nótese que la determinación de dicho umbral debe ir fijado por el cliente/interesado que solicita a un equipo de Ciencia de Datos la realización de este proyecto. Al no tener en este caso cliente dado el entorno educativo en el que se encuadra el proyecto, tendremos que determinar dicho umbral en función del comportamiento de dicha variable.
 
+# Business understanding
+Planteamos algunas preguntas sobre nuestros datos:
+
+* ¿El clima influye en el alquiler de bicicletas?
+* ¿Influye más la nieve o la lluvia?
+* ¿Nieva mucho en Seúl?
 
 
-# Datos
+# Data understanding
 
 A continuación leemos los datos y ver el tipo de variables.
 
@@ -91,8 +97,4 @@ str(train)
 
 # Análisis exploratorio de datos
 
-Planteamos algunas preguntas sobre nuestros datos:
 
-* ¿El clima influye en el alquiler de bicicletas?
-* ¿Influye más la nieve o la lluvia?
-* ¿Nieva mucho en Seúl?
