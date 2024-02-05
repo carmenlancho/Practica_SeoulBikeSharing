@@ -22,6 +22,7 @@ output:
 <!-- --- -->
 
 
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 # Cargamos las librerias que vamos necesitando a lo largo del codigo
