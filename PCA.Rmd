@@ -1,0 +1,83 @@
+---
+title: "PCA"
+author: "Isaac y Carmen"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Conjunto de datos
+
+Este conjunto de datos contiene estadísticas, en arrestos por cada 100000 residentes por asalto (Assault), asesinato (Murder) y violación (Rape) en los Estados de USA en 1973. También se proporciona el porcentaje de la población en áreas urbanas (UrbanPop).
+ 
+Le echamos un primer vistazo a los datos:
+
+```{r}
+head(USArrests)
+```
+
+Hacemos un summary de los datos:
+```{r}
+summary(USArrests)
+```
+
+Para realizar PCA sobre los datos USArrests:
+```{r}
+prcomp(USArrests)
+```
+
+Las standard deviations son los autovalores de la matriz de correlaciones, y representan la variabilidad en cada componente.  A mayor valor, más relevante es la variable correspondiente a efectos de visualización. Si queremos visualizar la importancia relativa de cada componente, haremos lo siguiente:
+```{r}
+plot(prcomp(USArrests))
+```
+
+Numéricamente:
+```{r}
+summary(prcomp(USArrests))
+```
+
+Como vemos, la variabilidad de los datos se explica mayoritariamente por la primera componente principal  PC1 que, tal y como se puede ver en la matriz Rotation, da un peso de 0.9952 a la variable Assault, y pesos cercanos a cero al resto. En la tabla anterior se observa que la proporción de varianza explicada por la primera componente PC1 es del 96.6%, es decir, es prácticamente la única relevante. ¿Qué está sucediendo? Si nos fijamos en los datos de USArrests, la magnitud de los valores de Assault es mucho mayor que la de las otras variables. Por ejemplo, en el caso de Alabama, 236 frente a 13.2 de Murder ó 21.2 de Rape. Entonces es la variable que va a tener más influencia en el resultado final, tal y como se ve en el gráfico precedente. La segunda  componente más influyente es PC2, que depende de UrbanPop, la siguiente variable en magnitud, y así sucesivamente.
+
+¿Cómo solucionar este problema de que una variable sea más influyente por el simple hecho de tener más magnitud? La respuesta es la estandarización. Repitamos el análisis, pero estandarizando los datos:
+```{r}
+plot(prcomp(USArrests,scale=T))
+```
+
+```{r}
+summary(prcomp(USArrests,scale=T))
+```
+
+Como puede verse, con las dos primeras componentes recogemos prácticamente el 87% de la variabilidad. Esto quiere decir que un gráfico de los datos de USAarrests, representados por las dos primeras componentes principales será suficientemente representativo.
+
+Antes de ir al gráfico, analicemos la matriz de rotaciones, en busca de interpretación semántica para las componentes principales:
+```{r}
+prcomp(USArrests,scale=T)
+```
+
+PC1 asigna pesos, todos del mismo signo a las variables. Viene a ser un promedio ponderado de las variables originales. Es decir, es una medida resumen que permite ordenar, en dicha componente, el comportamiento de los 50 estados desde el punto de vista de los delitos cometidos. Por ejemplo, al concentrarnos en PC2, los estados serían ordenados en cuanto a su población urbana en un sentido, ponderando en sentido contrario el número de asesinatos. En PC3, el orden viene principalmente dado por los secuestros. Debemos tener presente, en todo caso, que no hay ninguna garantía de interpretabilidad en un análisis PCA. 
+
+Dibujamos los datos proyectados sobre las dos primeras componentes:
+
+```{r}
+plot(prcomp(USArrests,scale=T)$x[,1:2])
+```
+
+Sería deseable poder ver los nombres de los estados, en lugar de simples puntos. Para ello:
+
+```{r}
+plot(prcomp(USArrests,scale=T)$x[,1:2],type="n")
+text(prcomp(USArrests,scale=T)$x[,1:2],rownames(USArrests))
+```
+
+Puntos cercanos en el mapa indican comportamiento/perfil similar en cuanto a los delitos cometidos. Del gráfico podemos inferir que Florida, Nevada y California son tres puntos extremos en cuanto al comportamiento criminal. Pero, ¿en qué sentido? ¿muy baja o muy alta criminalidad? La respuesta es muy alta, dado que en la matriz de rotación todos los pesos de la primera componente principal son negativos, luego a mayor valor en las variables originales, situación más a la izquierda en PC1. 
+En cuanto a PC2, tenemos comportamientos extremos por ejemplo en Hawai por abajo y en Mississippi y North Carolina por arriba. En el primer caso hay mucha población urbana y pocos asesinatos. En el segundo, al contrario.
+
+¿Cómo mejorar el gráfico? Un modo posible es incorporar la información de las variables utilizando la técnica del biplot.
+```{r}
+biplot(prcomp(USArrests,scale=T)) 
+```
+
+Como vemos, la primera componente viene a situarse donde se situaría el promedio de las cuatro variables. Los estados casi se ordenan en la segunda componente por UrbanPop en un sentido, y por Murder en el otro, como ya hemos deducido/comprobado.
